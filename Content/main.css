@@ -56,3 +56,12 @@ h3 {
 	margin-right: 10px;
 	color: #888;
 }
+
+.state {
+	font-size:18pt;
+	font-weight:bold;
+}
+
+.state.building { color:#fa2; }
+.state.idle { color: #5c5; }
+.state.failed { color: #c44; }

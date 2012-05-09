@@ -4,7 +4,20 @@
 
 <h1>@ViewBag.id</h1>
 
-State: <span style="font-size:18pt;font-weight:bold;">@ViewBag.state.Item2</span> @(((DateTime?)ViewBag.state.Item1).Value.Diff())
+State: <span class="state @ViewBag.state.Item2">@ViewBag.state.Item2</span>
+@switch((string)ViewBag.state.Item2) {
+    case "building":
+        <div>last built @(((DateTime?)ViewBag.logcreated).Value.Diff()) ago</div>
+        break;
+    case "idle":
+        <span>@(ViewBag.state.Item1 == null ? "forever" : "for " + ((DateTime?)ViewBag.state.Item1).Value.Diff().ToString())</span>
+        break;
+    case "failed":
+        <span>@(((DateTime?)ViewBag.logcreated).Value.Diff()) ago</span>
+        break;
+}
+
+
 @if(ViewBag.logcreated != null) {
     <a href="@Url.Action("log", new { id = ViewBag.id })" style="font-size:9pt;">see log &rarr;</a>
 }
