@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace deploy.Controllers {
 	
-	public class AppsController : Controller {
+	public class AppsController : BaseController {
 
 		[Authorize]
 		public ActionResult Detail(string id) {

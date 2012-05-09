@@ -13,7 +13,7 @@ State: <span class="state @ViewBag.state.Item2">@ViewBag.state.Item2</span>
         <span>last built @(ViewBag.state.Item1 == null ? "never" : ((DateTime?)ViewBag.state.Item1).Value.Diff().ToString() + " ago")</span>
         break;
     case "failed":
-        <span>@(((DateTime?)ViewBag.logcreated).Value.Diff()) ago</span>
+        <span>@(((DateTime?)ViewBag.state.Item1).Value.Diff()) ago</span>
         break;
 }
 

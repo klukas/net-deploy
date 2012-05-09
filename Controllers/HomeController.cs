@@ -7,7 +7,7 @@ using deploy.Models;
 using System.Web.Security;
 
 namespace deploy.Controllers {
-	public class HomeController : Controller {
+	public class HomeController : BaseController {
 
 		public ActionResult Login() {
 			return View();
