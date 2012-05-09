@@ -1,0 +1,12 @@
+﻿@model List<string>
+@{
+    ViewBag.Title = "Deploy";
+}
+
+<h1>Apps</h1>
+
+<ul>
+@foreach(var app in Model) {
+    <li>@Html.ActionLink(app, "detail", new { controller = "apps", id = app })</li>
+}
+</ul>

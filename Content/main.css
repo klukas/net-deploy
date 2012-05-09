@@ -1,0 +1,36 @@
+body {
+	font-family: Serif;
+	font-size: 14pt;
+	color: #444;
+	width: 1000px;
+	margin: 20px auto;
+}
+
+#flash {
+	background-color: #fa4;
+	padding: 10px 20px;
+	border-radius: 5px;
+}
+
+input[type=text], input[type=password] {
+	padding: 5px;
+	font-family: serif;
+	font-size: 14pt;
+	border-radius: 5px;
+	border: 1px solid #ddd;
+}
+
+input[type=submit], input[type=button], button {
+	border: 2px solid #ccc;
+	border-radius: 3px;
+	padding: 5px 10px;
+	background-color: #eee;
+	font-family: serif;
+	font-size: 14pt;
+	color: #555;
+}
+
+input[type=submit]:hover, input[type=button]:hover, button:hover {
+	color: #eee;
+	background-color: #aaa;
+}

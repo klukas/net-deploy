@@ -1,0 +1,25 @@
+﻿@{
+    ViewBag.Title = "Detail";
+}
+
+<h1>@ViewBag.id</h1>
+
+State: <span style="font-size:18pt;font-weight:bold;">@ViewBag.state.Item2</span> @(((DateTime?)ViewBag.state.Item1).Value.Diff())
+
+<div>
+    Webhook: <code style="background-color:#eee;">@Request.Url.GetLeftPart(UriPartial.Authority)/apps/hook/@ViewBag.id</code>
+</div>
+<br />
+@using(Html.BeginForm(new { action = "build", id = @ViewBag.id })) {
+    <input type="submit" value="build now" />
+}
+
+<h3>config</h3>
+<dl style="font-family:monospace;font-size:9pt;">
+@foreach(var pair in ViewBag.config) {
+    <dt style="font-weight:bold">@pair.Key</dt>
+    <dd>@pair.Value</dd>
+}
+</dl>
+
+
