@@ -7,7 +7,7 @@
 State: <span class="state @ViewBag.state.Item2">@ViewBag.state.Item2</span>
 @switch((string)ViewBag.state.Item2) {
     case "building":
-        <div>started @(((DateTime?)ViewBag.logcreated).Value.Diff()) ago</div>
+        <span>started @(((DateTime?)ViewBag.state.Item1).Value.Diff()) ago</span>
         break;
     case "idle":
         <span>last built @(ViewBag.state.Item1 == null ? "never" : ((DateTime?)ViewBag.state.Item1).Value.Diff().ToString() + " ago")</span>
