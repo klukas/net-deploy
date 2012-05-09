@@ -73,6 +73,7 @@
     <Compile Include="Models\FileDB.cs" />
     <Compile Include="Models\TimeDiff.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Temp.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Global.asax" />

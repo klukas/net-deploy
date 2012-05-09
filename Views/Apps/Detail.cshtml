@@ -5,6 +5,9 @@
 <h1>@ViewBag.id</h1>
 
 State: <span style="font-size:18pt;font-weight:bold;">@ViewBag.state.Item2</span> @(((DateTime?)ViewBag.state.Item1).Value.Diff())
+@if(ViewBag.logcreated != null) {
+    <a href="@Url.Action("log", new { id = ViewBag.id })" style="font-size:9pt;">see log &rarr;</a>
+}
 
 <div>
     Webhook: <code style="background-color:#eee;">@Request.Url.GetLeftPart(UriPartial.Authority)/apps/hook/@ViewBag.id</code>

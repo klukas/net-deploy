@@ -8,7 +8,7 @@ using System.Text.RegularExpressions;
 using System.Globalization;
 
 namespace deploy.Models {
-	public class FileDB {
+	public static class FileDB {
 		static object sync = new object();
 		static string datadir = Path.Combine(HostingEnvironment.ApplicationPhysicalPath, "App_Data");
 
@@ -62,6 +62,35 @@ namespace deploy.Models {
 				}
 				return config;
 			}
+		}
+
+		public static string LogPath(string id) {
+			return Path.Combine(AppDir(id), "log.txt");
+		}
+
+		public static DateTime? LogCreated(string id) {
+			lock(sync) {
+				var path = LogPath(id);
+				if(!File.Exists(path)) return null;
+
+				return new FileInfo(path).CreationTime;
+			}
+		}
+
+		/// <summary>
+		/// Makes sure passwords are escaped before being displayed
+		/// </summary>
+		public static Dictionary<string, string> SanitizeForDisplay(this Dictionary<string, string> config) {
+			var sane = new Dictionary<string, string>(config);
+
+			var password = new Regex(@"(git|ssh|https|http|ftps|ftp)(://[^:]+:)([^@]+)(@)", RegexOptions.IgnoreCase);
+
+			foreach(var key in sane.Keys.ToArray()) {
+				sane[key] = password.Replace(sane[key], "$1$2*****$4");
+			}
+
+			return sane;
+			
 		}
 	}
 }

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Web;
 using System.IO;
 using System.Configuration;
+using System.Text.RegularExpressions;
 
 namespace deploy.Models {
 	public class Builder {
@@ -29,15 +30,17 @@ namespace deploy.Models {
 					GitUpdate();
 					NugetRefresh();
 					Msbuild();
+					Deploy();
 
 					Log("-> build completed");
 					FileDB.AppState(_id, "idle");
-				} catch {
+				} catch(Exception e) {
+					Log("ERROR: " + e.ToString());
 					Log("-> build failed!");
 					FileDB.AppState(_id, "failed");
 					throw;
 				}
-							
+
 			}
 		}
 
@@ -79,6 +82,93 @@ namespace deploy.Models {
 			Log("-> building with " + msbuild);
 			new Cmd("\"" + msbuild + "\"", runFrom: _sourcedir, logPath: _logfile)
 				.Run().EnsureCode(0);
+		}
+
+		private void Deploy() {
+			string deploy_base, deploy_to, deploy_ignore = null;
+
+			_config.TryGetValue("deploy_base", out deploy_base);
+			_config.TryGetValue("deploy_to", out deploy_to);
+			_config.TryGetValue("deploy_ignore", out deploy_ignore);
+
+			if(string.IsNullOrWhiteSpace(deploy_to)) throw new Exception("deploy_to not specified in config");
+
+			Log(" -> deploying to " + deploy_to);
+
+			var source = string.IsNullOrEmpty(deploy_base) ? _sourcedir : Path.Combine(_sourcedir, deploy_base);
+
+			if(!Directory.Exists(deploy_to)) Directory.CreateDirectory(deploy_to);
+
+			List<string> simple;
+			List<string> paths;
+			GetIgnore(source, deploy_to, deploy_ignore, out simple, out paths);
+
+			var xf = new List<string>(simple);
+			var xd = new List<string>(simple);
+			xd.AddRange(paths);
+
+			var xf_arg = xf.Count > 0 ? " /xf " + string.Join(" ", xf) : null;
+			var xd_arg = xd.Count > 0 ? " /xd " + string.Join(" ", xd) : null;
+
+			new Cmd("\"robocopy . \"" + deploy_to + "\" /s /purge /nfl /ndl /njh /njs " + xf_arg + xd_arg + "\"", runFrom: source, logPath: _logfile)
+				.Run();
+		}
+
+		private void GetIgnore(string source, string dest, string ignore_str, out List<string> simple, out List<string> paths) {
+			simple = new List<string>();
+			paths = new List<string>();
+
+			if(string.IsNullOrWhiteSpace(ignore_str)) return; // nothing to ignore
+
+			var ignore = Regex.Split(ignore_str, @"(?<!\\)\s+"); // split on spaces, unless they're escaped with \
+
+			var path_segments = new List<string>();
+			foreach(var i in ignore) {
+				var part = i.Replace(@"\ ", " ");
+				if(part.Contains("\\")) path_segments.Add(part);
+				else simple.Add(QuoteSpacesInPath(part));
+			}
+
+			if(path_segments.Count > 0) {
+				// have to manually look for directories that match the path segment
+				var source_paths = DirectoriesIn(source);
+				var dest_paths = DirectoriesIn(dest);
+
+				foreach(var seg in path_segments) {
+					paths.AddRange(MatchingDirectories(seg, source_paths).Select(s => QuoteSpacesInPath(s)));
+					paths.AddRange(MatchingDirectories(seg, dest_paths).Select(s => QuoteSpacesInPath(s)));
+				}
+			}
+		}
+
+		private static IEnumerable<string> MatchingDirectories(string segment, string[] directories) {
+			var matches = directories
+				.Select(s => new { path = s, index = s.IndexOf(segment, StringComparison.OrdinalIgnoreCase) })
+				.Where(p => p.index != -1)
+				.OrderBy(s => s.path.Length);
+
+			if(matches.Count() == 0) return new string[0];
+
+			List<string> filtered = new List<string>();
+			var seenPrefixes = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+
+			foreach(var match in matches) {
+				var prefix = match.path.Substring(0, match.index);
+				if(seenPrefixes.Contains(prefix)) continue; // already added a parent
+				filtered.Add(match.path.TrimEnd('\\'));
+				seenPrefixes.Add(prefix);
+			}
+
+			return filtered;
+		}
+
+		private static string[] DirectoriesIn(string path) {
+			return new Cmd("echo off && for /r %d in (.) do echo %~fd", runFrom: path).Run().EnsureCode(0).Output
+					.Split(new string[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
+		}
+
+		private static string QuoteSpacesInPath(string path) {
+			return Regex.Replace(path, @"^(\S*\s+)(\S*\s*)*", "\"$&\"");
 		}
 
 		private void Log(string message) {
