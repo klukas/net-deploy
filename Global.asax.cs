@@ -21,7 +21,7 @@ namespace deploy {
 			routes.MapRoute(
 				"Default", // Route name
 				"{controller}/{action}/{id}", // URL with parameters
-				new { controller = "Default", action = "Index", id = UrlParameter.Optional } // Parameter defaults
+				new { controller = "home", action = "index", id = UrlParameter.Optional } // Parameter defaults
 			);
 
 		}

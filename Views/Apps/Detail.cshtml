@@ -7,10 +7,10 @@
 State: <span class="state @ViewBag.state.Item2">@ViewBag.state.Item2</span>
 @switch((string)ViewBag.state.Item2) {
     case "building":
-        <div>last built @(((DateTime?)ViewBag.logcreated).Value.Diff()) ago</div>
+        <div>started @(((DateTime?)ViewBag.logcreated).Value.Diff()) ago</div>
         break;
     case "idle":
-        <span>@(ViewBag.state.Item1 == null ? "forever" : "for " + ((DateTime?)ViewBag.state.Item1).Value.Diff().ToString())</span>
+        <span>last built @(ViewBag.state.Item1 == null ? "never" : ((DateTime?)ViewBag.state.Item1).Value.Diff().ToString() + " ago")</span>
         break;
     case "failed":
         <span>@(((DateTime?)ViewBag.logcreated).Value.Diff()) ago</span>
@@ -19,7 +19,7 @@ State: <span class="state @ViewBag.state.Item2">@ViewBag.state.Item2</span>
 
 
 @if(ViewBag.logcreated != null) {
-    <a href="@Url.Action("log", new { id = ViewBag.id })" style="font-size:9pt;">see log &rarr;</a>
+    <a href="@Url.Action("log", new { id = ViewBag.id })" style="font-size:9pt;">see build log &rarr;</a>
 }
 
 <div>

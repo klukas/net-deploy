@@ -13,15 +13,23 @@ namespace deploy.Controllers {
 			return View();
 		}
 
+		public ActionResult Logout() {
+			FormsAuthentication.SignOut();
+			TempData["flash"] = "You've been logged out";
+			return RedirectToAction("login");
+		}
+
 		[HttpPost]
 		[ValidateAntiForgeryToken]
-		public ActionResult Login(string username, string password) {
+		public ActionResult Login(string username, string password, string returnUrl) {
 			if(username != "admin" || password != "br3akAway") {
 				TempData["flash"] = "invalid login";
 				return View();
 			}
 
 			Response.Cookies.Add(FormsAuthentication.GetAuthCookie(username, true));
+
+			if(!string.IsNullOrEmpty(returnUrl)) return Redirect(returnUrl);
 
 			return RedirectToAction("index");
 		}
