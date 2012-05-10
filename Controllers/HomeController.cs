@@ -5,6 +5,8 @@ using System.Web;
 using System.Web.Mvc;
 using deploy.Models;
 using System.Web.Security;
+using DevOne.Security.Cryptography.BCrypt;
+using System.Configuration;
 
 namespace deploy.Controllers {
 	public class HomeController : BaseController {
@@ -22,16 +24,16 @@ namespace deploy.Controllers {
 		[HttpPost]
 		[ValidateAntiForgeryToken]
 		public ActionResult Login(string username, string password, string returnUrl) {
-			if(username != "admin" || password != "br3akAway") {
-				TempData["flash"] = "invalid login";
-				return View();
+			var passhash = ConfigurationManager.AppSettings["password"];
+
+			if(username == "admin" && BCryptHelper.CheckPassword(password, passhash)) {
+				Response.Cookies.Add(FormsAuthentication.GetAuthCookie(username, true));
+				if(!string.IsNullOrEmpty(returnUrl)) return Redirect(returnUrl);
+				return RedirectToAction("index");
 			}
 
-			Response.Cookies.Add(FormsAuthentication.GetAuthCookie(username, true));
-
-			if(!string.IsNullOrEmpty(returnUrl)) return Redirect(returnUrl);
-
-			return RedirectToAction("index");
+			TempData["flash"] = "invalid login";
+			return View();
 		}
 
 		[Authorize]

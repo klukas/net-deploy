@@ -10,22 +10,23 @@ Runs as an IIS website that can update other websites (including itself!) on the
 3. Build from source (.NET 4)
 4. Deploy the built app
 
-1. Prerequisites
-----------------
+Prerequisites
+-------------
 
 1. Install git, and make sure the git bin directory is on the system path (not just your user path, and not the git cmd directory).
    e.g. `setx /m path "%path%;c:\program files (x86)\git\bin"`
 2. Install targeting packs for MS Build (see [here](http://stackoverflow.com/a/3315614/87453)).
 
-2. Setting up the website
--------------------------
+Setting up the website
+----------------------
 
 1. Build net-deploy from source. Copy the files to your server, e.g. `c:\inetpub\wwwroot\deploy`.
 2. In the IIS management console, create a new website (or an application under an existing website) that points to the net-deploy files.
 3. If you created an application instead of a website, create a new application pool for the application.
 4. In the application pool advanced settings, set it to run as "LOCAL SYSTEM" so that it has permissions to update the file system.
+5. In the appsettings.config, you'll want to change the password (default is 'password') and probably require HTTPS if you're running in production.
 
-3. Configuration
+Configuring apps
 ----------------
 
 Now you need to configure the apps that net-deploy can deploy. A good example is setting up net-deploy to deploy itself
@@ -35,12 +36,11 @@ Now you need to configure the apps that net-deploy can deploy. A good example is
 3. Add this configuration to config.txt
 ```
 git = git://github.com/lukesampson/net-deploy.git
-deploy_ignore = *.cs .gitignore *.sln *.csproj *.log .git obj thumbs.db App_Data appsettings.config
+deploy_ignore = *.cs *.sln *.csproj *.log *.ps1 .git .gitignore obj thumbs.db App_Data appsettings.config
 deploy_to = C:\inetpub\wwwroot\deploy
 ```
 
-
-4. Try it out
+Trying it out
 -------------
 
 Open the website in your web browser and log in. If you configured net-deploy as above you should see one app, 'net-deploy'. Click on it, and then click 'build' to test that it's working.
@@ -48,8 +48,8 @@ Open the website in your web browser and log in. If you configured net-deploy as
 If something goes wrong, you can click on 'see build log' to see the output from the build.
 
 
-5. Troubleshooting
-------------------
+Troubleshooting
+---------------
 
 **Build hangs when pulling or cloning from git**
 
