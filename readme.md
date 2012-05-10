@@ -14,7 +14,7 @@ Runs as an IIS website that can update other websites (including itself!) on the
 ----------------
 
 1. Install git, and make sure the git bin directory is on the system path (not just your user path, and not the git cmd directory).
-   e.g. `setx /m path "%path%;c:\program files (x86)\git\bin"
+   e.g. `setx /m path "%path%;c:\program files (x86)\git\bin"`
 2. Install targeting packs for MS Build (see [here](http://stackoverflow.com/a/3315614/87453)).
 
 2. Setting up the website
@@ -34,7 +34,7 @@ Now you need to configure the apps that net-deploy can deploy. A good example is
 2. Inside this folder, create a file called config.txt
 3. Add this configuration to config.txt
     
-	git = git://github.com/lukesampson/net-deploy.git
+    git = git://github.com/lukesampson/net-deploy.git
     deploy_ignore = *.cs .gitignore *.sln *.csproj *.log .git obj thumbs.db App_Data
     deploy_to = C:\inetpub\wwwroot\deploy
 
