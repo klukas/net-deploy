@@ -29,6 +29,7 @@ input[type=submit], input[type=button], button {
 	font-family: serif;
 	font-size: 14pt;
 	color: #555;
+	cursor: pointer;
 }
 
 input[type=submit]:hover, input[type=button]:hover, button:hover {

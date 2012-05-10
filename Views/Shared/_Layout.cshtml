@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="utf-8" />
-    <title>@ViewBag.Title</title>
+    <title>@(ViewBag.Title != null ? ViewBag.Title + " | ": null)Deploy</title>
     <link href="@Url.Content("~/content/main.css")" rel="stylesheet" type="text/css" />
 </head>
 
