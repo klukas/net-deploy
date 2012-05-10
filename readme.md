@@ -35,7 +35,7 @@ Now you need to configure the apps that net-deploy can deploy. A good example is
 3. Add this configuration to config.txt
 ```
 git = git://github.com/lukesampson/net-deploy.git
-deploy_ignore = *.cs .gitignore *.sln *.csproj *.log .git obj thumbs.db App_Data
+deploy_ignore = *.cs .gitignore *.sln *.csproj *.log .git obj thumbs.db App_Data appsettings.config
 deploy_to = C:\inetpub\wwwroot\deploy
 ```
 
@@ -67,7 +67,7 @@ There are 3 ways to get it working.
 
 **If the repo is private:**
 
-2. **Easier, but stores passwords in plain text**: use a non-SSH git URL containing a username and password for the `git` setting in config.txt, e.g. `https://username:password@github.com/username/repo`.
+2. **Easier, but stores passwords in plain text**: use a non-SSH git URL containing a username and password for the `git` setting in config.txt, e.g. `https://username:password@github.com/username/yourrepo.git`.
 3. **More setup, slightly more secure**: since net-deploy is running git under the local system account, it's going to have trouble finding your SSH keys. You can put them in the git installation directory as a fallback.
     1. Create an SSH key without a password, if you don't already have one.
 	2. Put your password-less SSH key in `%programfiles(x86)%\Git\.ssh\id_rsa`

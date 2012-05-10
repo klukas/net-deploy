@@ -6,6 +6,7 @@ using System.Web.Mvc;
 
 namespace deploy.Controllers {
 
+	[UseRequireHttpsFromAppSettings]
 	public abstract class BaseController : Controller {
 	}
 }
