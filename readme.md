@@ -52,5 +52,25 @@ If something goes wrong, you can click on 'see build log' to see the output from
 ------------------
 
 **Build hangs when pulling or cloning from git**
-Open task manager and kill the ssh.exe process: the build will then fail. What's probably happening is, SSH is looking for your private key in %userprofile%
 
+First, open task manager and kill the ssh.exe process: the build will fail and you can get on with fixing it.
+
+What's probably happening is, git is spawning SSH, which is doing some interactive stuff--asking you to confirm the key for the remote host or looking for your private key in %userprofile%.
+
+You don't see any useful output messages because git spawns ssh.exe as a separate process, so the SSH output isn't captured.
+
+There are 3 ways to get it working.
+
+**If the repo is public:**
+
+1. Change your config.txt to use a public read-access URL that doesn't require authentication for the `git` setting. GitHub provides these for public repos.
+
+**If the repo is private:**
+
+2. **Easier, but stores passwords in plain text**: use a non-SSH git URL containing a username and password for the `git` setting in config.txt, e.g. `https://username:password@github.com/username/repo`.
+3. **More setup, slightly more secure**: since net-deploy is running git under the local system account, it's going to have trouble finding your SSH keys. You can put them in the git installation directory as a fallback.
+    1. Create an SSH key without a password, if you don't already have one.
+	2. Put your password-less SSH key in `%programfiles(x86)%\Git\.ssh\id_rsa`
+	3. Copy your `%userprofile%\.ssh\known_hosts` file (could be from another computer) to `%programfiles(x86)%\Git\.ssh\known_hosts`
+
+If it's still not working, you might need to do some debugging by running as the local system account. [This blog post](http://blogs.msdn.com/b/adioltean/archive/2004/11/27/271063.aspx) lists some hacks to get it done. See also [this question on stackoverflow](http://stackoverflow.com/questions/77528/how-do-you-run-cmd-exe-under-the-local-system-account).
