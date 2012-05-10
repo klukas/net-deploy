@@ -34,11 +34,12 @@ Now you need to configure the apps that net-deploy can deploy. A good example is
 1. Create a folder in App_Data in the net-deploy web folder called 'net-deploy'
 2. Inside this folder, create a file called config.txt
 3. Add this configuration to config.txt
-```
-git = git://github.com/lukesampson/net-deploy.git
-deploy_ignore = *.cs *.sln *.csproj *.log *.ps1 .git .gitignore obj thumbs.db App_Data appsettings.config
-deploy_to = C:\inetpub\wwwroot\deploy
-```
+
+    ```
+    git = git://github.com/lukesampson/net-deploy.git
+    deploy_ignore = *.cs *.sln *.csproj *.log *.ps1 .git .gitignore obj thumbs.db App_Data appsettings.config
+    deploy_to = C:\inetpub\wwwroot\deploy
+    ```
 
 Trying it out
 -------------
