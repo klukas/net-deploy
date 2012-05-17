@@ -102,6 +102,7 @@ namespace deploy.Models {
 			List<string> simple;
 			List<string> paths;
 			GetIgnore(source, deploy_to, deploy_ignore, out simple, out paths);
+			Log("got ignore paths");
 
 			var xf = new List<string>(simple);
 			var xd = new List<string>(simple);
