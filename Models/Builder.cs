@@ -132,40 +132,15 @@ namespace deploy.Models {
 
 			if(path_segments.Count > 0) {
 				// have to manually look for directories that match the path segment
-				var source_paths = DirectoriesIn(source);
-				var dest_paths = DirectoriesIn(dest);
-
 				foreach(var seg in path_segments) {
-					paths.AddRange(MatchingDirectories(seg, source_paths).Select(s => QuoteSpacesInPath(s)));
-					paths.AddRange(MatchingDirectories(seg, dest_paths).Select(s => QuoteSpacesInPath(s)));
+					var sourcepath = Path.Combine(source, seg);
+					if(File.Exists(sourcepath) || Directory.Exists(sourcepath)) paths.Add(QuoteSpacesInPath(sourcepath.TrimEnd('\\')));
+					else {
+						var destpath = Path.Combine(dest, seg);
+						if(File.Exists(destpath) || Directory.Exists(destpath)) paths.Add(QuoteSpacesInPath(destpath.TrimEnd('\\')));
+					}
 				}
 			}
-		}
-
-		private static IEnumerable<string> MatchingDirectories(string segment, string[] directories) {
-			var matches = directories
-				.Select(s => new { path = s, index = s.IndexOf(segment, StringComparison.OrdinalIgnoreCase) })
-				.Where(p => p.index != -1)
-				.OrderBy(s => s.path.Length);
-
-			if(matches.Count() == 0) return new string[0];
-
-			List<string> filtered = new List<string>();
-			var seenPrefixes = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-
-			foreach(var match in matches) {
-				var prefix = match.path.Substring(0, match.index);
-				if(seenPrefixes.Contains(prefix)) continue; // already added a parent
-				filtered.Add(match.path.TrimEnd('\\'));
-				seenPrefixes.Add(prefix);
-			}
-
-			return filtered;
-		}
-
-		private static string[] DirectoriesIn(string path) {
-			return new Cmd("echo off && for /r %d in (.) do echo %~fd", runFrom: path).Run().EnsureCode(0).Output
-					.Split(new string[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
 		}
 
 		private static string QuoteSpacesInPath(string path) {
