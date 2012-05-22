@@ -25,6 +25,10 @@ namespace deploy.Models {
 			_output = new StringBuilder();
 		}
 
+		public static CmdResult Run(string command, string runFrom = null, string logPath = null) {
+			return new Cmd(command, runFrom, logPath).Run();
+		}
+
 		public CmdResult Run() {
 			Process proc = new Process();
 
@@ -39,6 +43,8 @@ namespace deploy.Models {
 
 			proc.OutputDataReceived += new DataReceivedEventHandler(proc_OutputDataReceived);
 			proc.ErrorDataReceived += new DataReceivedEventHandler(proc_ErrorDataReceived);
+
+			WriteLog(_command);
 
 			proc.Start();
 

@@ -63,25 +63,33 @@ namespace deploy.Models {
 			if(!Directory.Exists(_sourcedir)) {
 				Directory.CreateDirectory(_sourcedir);
 				Log("-> doing git clone");
-				new Cmd("git clone " + giturl + " source", runFrom: _appdir, logPath: _logfile).Run().EnsureCode(0);
+				Cmd.Run("git clone " + giturl + " source", runFrom: _appdir, logPath: _logfile).EnsureCode(0);
 			} else {
 				Log("-> doing git pull");
-				new Cmd("git pull " + giturl, runFrom: _sourcedir, logPath: _logfile).Run().EnsureCode(0);
+				Cmd.Run("git pull " + giturl, runFrom: _sourcedir, logPath: _logfile).EnsureCode(0);
 			}
 		}
 
 		private void NugetRefresh() {
 			Log("-> doing nuget refresh");
-			new Cmd("echo off && for /r . %f in (packages.config) do if exist %f echo found %f && nuget i \"%f\" -o packages", runFrom: _sourcedir, logPath: _logfile)
-				.Run().EnsureCode(0);
+			Cmd.Run("echo off && for /r . %f in (packages.config) do if exist %f echo found %f && nuget i \"%f\" -o packages", runFrom: _sourcedir, logPath: _logfile)
+				.EnsureCode(0);
 		}
 
 		private void Msbuild() {
 			var msbuild = ConfigurationManager.AppSettings["msbuild"];
+			string build_config = null;
+			_config.TryGetValue("build_config", out build_config);
 
 			Log("-> building with " + msbuild);
-			new Cmd("\"" + msbuild + "\"", runFrom: _sourcedir, logPath: _logfile)
-				.Run().EnsureCode(0);
+
+			string parameters = "";
+			if(build_config != null) {
+				parameters += " /p:Configuration=" + build_config;
+			}
+
+			Cmd.Run("\"" + msbuild + "\"" + parameters, runFrom: _sourcedir, logPath: _logfile)
+				.EnsureCode(0);
 		}
 
 		private void Deploy() {
@@ -111,8 +119,7 @@ namespace deploy.Models {
 			var xf_arg = xf.Count > 0 ? " /xf " + string.Join(" ", xf) : null;
 			var xd_arg = xd.Count > 0 ? " /xd " + string.Join(" ", xd) : null;
 
-			new Cmd("\"robocopy . \"" + deploy_to + "\" /s /purge /nfl /ndl " + xf_arg + xd_arg + "\"", runFrom: source, logPath: _logfile)
-				.Run();
+			Cmd.Run("\"robocopy . \"" + deploy_to + "\" /s /purge /nfl /ndl " + xf_arg + xd_arg + "\"", runFrom: source, logPath: _logfile);
 		}
 
 		private void GetIgnore(string source, string dest, string ignore_str, out List<string> simple, out List<string> paths) {
