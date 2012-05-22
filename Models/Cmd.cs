@@ -55,6 +55,8 @@ namespace deploy.Models {
 
 			var result = new CmdResult(_command, proc.ExitCode, _output.ToString());
 			proc.Close();
+
+			WriteLog("exit code: " + result.ExitCode);
 			return result;
 		}
 
