@@ -27,8 +27,12 @@ namespace deploy.Controllers {
 			var passhash = ConfigurationManager.AppSettings["password"];
 
 			if(username == "admin" && BCryptHelper.CheckPassword(password, passhash)) {
-				var cookie = FormsAuthentication.GetAuthCookie(username, true);
-				cookie.Expires = DateTime.MinValue; // makes it a session cookie
+				int oneDay = 24 * 60;
+				var ticket = new FormsAuthenticationTicket(username, false, oneDay);
+
+				HttpCookie cookie = new HttpCookie(FormsAuthentication.FormsCookieName, FormsAuthentication.Encrypt(ticket));
+				Response.Cookies.Add(cookie);
+
 				Response.Cookies.Add(cookie);
 				if(!string.IsNullOrEmpty(returnUrl)) return Redirect(returnUrl);
 				return RedirectToAction("index");
