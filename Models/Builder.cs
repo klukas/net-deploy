@@ -91,6 +91,8 @@ namespace deploy.Models {
         }
 
         private void Transform() {
+            Log("-> running web.config transforms");
+
             var msbuild = ConfigurationManager.AppSettings["msbuild"];
 
             var scriptpath = Path.Combine(HostingEnvironment.ApplicationPhysicalPath, "Scripts\\msbuild");
