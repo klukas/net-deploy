@@ -16,7 +16,7 @@ namespace deploy.Models {
 		string _logfile;
 		string _sourcedir;
         string _workingdir;
-        string _buildconfig = "Release";
+        string _buildconfig;
 
 		public Builder(string id) {
 			_id = id;
@@ -57,7 +57,7 @@ namespace deploy.Models {
 			_sourcedir = Path.Combine(_appdir, "source");
             _workingdir = Path.Combine(_appdir, "working");
 
-			_config.TryGetValue("build_config", out _buildconfig);
+            if(!_config.TryGetValue("build_config", out _buildconfig)) _buildconfig = "Release";
 
 			if(File.Exists(_logfile)) File.Delete(_logfile); // clear log
 		}
@@ -98,7 +98,9 @@ namespace deploy.Models {
             var scriptpath = Path.Combine(HostingEnvironment.ApplicationPhysicalPath, "Scripts\\msbuild");
 
             var candidates = Directory.GetFiles(_workingdir, "web.config", SearchOption.AllDirectories);
+            Log("found " + candidates.Length + " web.config files");
             foreach(var webConfig in candidates) {
+
                 var dir = Path.GetDirectoryName(webConfig);
                 var transform = Path.Combine(dir, "web." + _buildconfig + ".config");
                 if(File.Exists(transform)) {
