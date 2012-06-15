@@ -5,21 +5,22 @@ using System.Web;
 using System.IO;
 using System.Configuration;
 using System.Text.RegularExpressions;
+using System.Web.Hosting;
 
 namespace deploy.Models {
 	public class Builder {
-
 
 		string _id;
 		string _appdir;
 		Dictionary<string, string> _config;
 		string _logfile;
 		string _sourcedir;
+        string _workingdir;
+        string _buildconfig = "Release";
 
 		public Builder(string id) {
 			_id = id;
 		}
-
 
 		public void Build() {
 			lock(AppLock.Get(_id)) {
@@ -29,6 +30,8 @@ namespace deploy.Models {
 				try {					
 					GitUpdate();
 					NugetRefresh();
+                    CopyWorking();
+                    Transform();
 					Msbuild();
 					Deploy();
 
@@ -52,6 +55,9 @@ namespace deploy.Models {
 			_config = FileDB.AppConfig(_id);
 			_logfile = Path.Combine(_appdir, "log.txt");
 			_sourcedir = Path.Combine(_appdir, "source");
+            _workingdir = Path.Combine(_appdir, "working");
+
+			_config.TryGetValue("build_config", out _buildconfig);
 
 			if(File.Exists(_logfile)) File.Delete(_logfile); // clear log
 		}
@@ -76,19 +82,49 @@ namespace deploy.Models {
 				.EnsureCode(0);
 		}
 
+        private void CopyWorking() {
+            Log("-> copying to working dir");
+
+            if(!Directory.Exists(_workingdir)) Directory.CreateDirectory(_workingdir);
+
+            Cmd.Run("\"robocopy . \"" + _workingdir + "\" /s /purge /nfl /ndl /xd bin obj .git\"", runFrom: _sourcedir, logPath: _logfile);
+        }
+
+        private void Transform() {
+            var msbuild = ConfigurationManager.AppSettings["msbuild"];
+
+            var scriptpath = Path.Combine(HostingEnvironment.ApplicationPhysicalPath, "Scripts\\msbuild");
+
+            var candidates = Directory.GetFiles(_workingdir, "web.config", SearchOption.AllDirectories);
+            foreach(var webConfig in candidates) {
+                var dir = Path.GetDirectoryName(webConfig);
+                var transform = Path.Combine(dir, "web." + _buildconfig + ".config");
+                if(File.Exists(transform)) {
+                    Cmd.Run("\"\"" + msbuild + "\""
+                        + " /p:Dir=\"" + dir + "\""
+                        + " /p:Source=" + Path.GetFileName(webConfig)
+                        + " /p:Transform=" + Path.GetFileName(transform)
+                        + " transform.msbuild\"", scriptpath, _logfile).EnsureCode(0);
+
+                    // delete transforms
+                    foreach(var trsfm in Directory.GetFiles(dir, "web.*.config", SearchOption.TopDirectoryOnly)) {
+                        File.Delete(trsfm);
+                    }
+                }
+            }
+        }
+
 		private void Msbuild() {
 			var msbuild = ConfigurationManager.AppSettings["msbuild"];
-			string build_config = null;
-			_config.TryGetValue("build_config", out build_config);
 
-			Log("-> building with " + msbuild);
+			Log("-> building with " + msbuild + " (" + _buildconfig + " config)");
 
 			string parameters = "";
-			if(build_config != null) {
-				parameters += " /p:Configuration=" + build_config;
+            if(_buildconfig != null) {
+                parameters += " /p:Configuration=" + _buildconfig;
 			}
 
-			Cmd.Run("\"" + msbuild + "\"" + parameters, runFrom: _sourcedir, logPath: _logfile)
+            Cmd.Run("\"" + msbuild + "\"" + parameters, runFrom: _workingdir, logPath: _logfile)
 				.EnsureCode(0);
 		}
 
@@ -103,7 +139,7 @@ namespace deploy.Models {
 
 			Log(" -> deploying to " + deploy_to);
 
-			var source = string.IsNullOrEmpty(deploy_base) ? _sourcedir : Path.Combine(_sourcedir, deploy_base);
+			var source = string.IsNullOrEmpty(deploy_base) ? _workingdir : Path.Combine(_workingdir, deploy_base);
 
 			if(!Directory.Exists(deploy_to)) Directory.CreateDirectory(deploy_to);
 

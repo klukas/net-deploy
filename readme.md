@@ -16,6 +16,7 @@ Prerequisites
 1. Install git, and make sure the git bin directory is on the system path (not just your user path, and not the git cmd directory).
    e.g. `setx /m path "%path%;c:\program files (x86)\git\bin"`
 2. Install targeting packs for MS Build (see [here](http://stackoverflow.com/a/3315614/87453)).
+	* If you want to use web.config transformations, make sure you have $(MSBuildExtensionsPath)\Microsoft\VisualStudio\v11.0\Web\Microsoft.Web.Publishing.Tasks.dll or $(MSBuildExtensionsPath)\Microsoft\VisualStudio\v10.0\Web\Microsoft.Web.Publishing.Tasks.dll 
 
 Setting up the website
 ----------------------
