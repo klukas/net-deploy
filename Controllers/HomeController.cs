@@ -7,10 +7,12 @@ using deploy.Models;
 using System.Web.Security;
 using DevOne.Security.Cryptography.BCrypt;
 using System.Configuration;
+using System.Web.UI;
 
 namespace deploy.Controllers {
 	public class HomeController : BaseController {
 
+        [OutputCache(Duration=0)]
 		public ActionResult Login() {
 			return View();
 		}
