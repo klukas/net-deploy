@@ -6,6 +6,7 @@ using System.Web.Hosting;
 using System.IO;
 using System.Text.RegularExpressions;
 using System.Globalization;
+using System.Configuration;
 
 namespace deploy.Models {
 	public static class FileDB {
@@ -51,6 +52,9 @@ namespace deploy.Models {
 				var configfile = Path.Combine(AppDir(id), "config.txt");
 				var lineno = 1;
 				var source = File.ReadAllText(configfile);
+
+                // defaults
+                config["msbuild"] = ConfigurationManager.AppSettings["msbuild"];
 
 				foreach(var line in Regex.Split(source, "\n")) {
 					var pair = line.Split('=');

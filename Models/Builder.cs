@@ -119,7 +119,7 @@ namespace deploy.Models {
         }
 
 		private void Msbuild() {
-			var msbuild = ConfigurationManager.AppSettings["msbuild"];
+            var msbuild = _config["msbuild"];
 
 			Log("-> building with " + msbuild + " (" + _buildconfig + " config)");
 
