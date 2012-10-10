@@ -29,8 +29,6 @@ namespace deploy {
 		protected void Application_Start() {
 			AreaRegistration.RegisterAllAreas();
 
-            Elmah.ErrorSignal.FromCurrentContext().Raise(new Exception("Application start"));
-
 			RegisterGlobalFilters(GlobalFilters.Filters);
 			RegisterRoutes(RouteTable.Routes);
 		}
