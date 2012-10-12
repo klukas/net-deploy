@@ -10,7 +10,7 @@
     <ul id="nav">
         <li>@Html.ActionLink("apps", "index", new { controller = "home" })</li>
         @if(User.Identity.IsAuthenticated) {
-        <li>@Html.ActionLink("home", "logout", new { controller = "home" })</li>
+        <li>@Html.ActionLink("logout", "logout", new { controller = "home" })</li>
         }
     </ul>
     @if(TempData["flash"] != null) {
