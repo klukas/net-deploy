@@ -128,11 +128,7 @@ namespace deploy.Models {
                 parameters += " /p:Configuration=" + _buildconfig;
 			}
 
-            string builddir;
-            if(_config.TryGetValue("build_dir", out builddir)) builddir = Path.Combine(_workingdir, builddir);
-            else builddir = _workingdir;
-
-            Cmd.Run("\"" + msbuild + "\"" + parameters, runFrom: builddir, logPath: _logfile)
+            Cmd.Run("\"" + msbuild + "\"" + parameters, runFrom: _workingdir, logPath: _logfile)
 				.EnsureCode(0);
 		}
 
