@@ -9,7 +9,9 @@
 <body>
     <ul id="nav">
         <li>@Html.ActionLink("apps", "index", new { controller = "home" })</li>
-        <li><a href="@Url.Content("~/elmah.axd")">error log</a></li>
+        @if(User.Identity.IsAuthenticated) {
+        <li>@Html.ActionLink("home", "logout", new { controller = "home" })</li>
+        }
     </ul>
     @if(TempData["flash"] != null) {
         <div id="flash">@Html.Raw(TempData["flash"] as string)</div>
