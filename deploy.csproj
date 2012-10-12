@@ -47,12 +47,12 @@
     <Reference Include="DevOne.Security.Cryptography.BCrypt">
       <HintPath>packages\BCrypt.1.0.0.0\lib\DevOne.Security.Cryptography.BCrypt.dll</HintPath>
     </Reference>
-    <Reference Include="Elmah">
-      <HintPath>packages\elmah.corelibrary.1.2.2\lib\Elmah.dll</HintPath>
-    </Reference>
     <Reference Include="Microsoft.Web.Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <Private>True</Private>
       <HintPath>packages\Microsoft.Web.Infrastructure.1.0.0.0\lib\net40\Microsoft.Web.Infrastructure.dll</HintPath>
+    </Reference>
+    <Reference Include="NLog">
+      <HintPath>packages\NLog.2.0.0.2000\lib\net40\NLog.dll</HintPath>
     </Reference>
     <Reference Include="System.Data.Entity" />
     <Reference Include="System.Web.Helpers, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
@@ -111,6 +111,7 @@
     <Compile Include="Models\Builder.cs" />
     <Compile Include="Models\Cmd.cs" />
     <Compile Include="Models\FileDB.cs" />
+    <Compile Include="Models\LogService.cs" />
     <Compile Include="Models\TimeDiff.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Util.cs" />
@@ -144,6 +145,7 @@
     <Content Include="appsettings.config">
       <SubType>Designer</SubType>
     </Content>
+    <Content Include="nlog.config" />
     <None Include="readme.md" />
     <Content Include="Scripts\msbuild\transform.msbuild" />
     <Content Include="Web.Debug.config">
@@ -177,7 +179,9 @@
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>56120</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
-          <IISUrl>http://localhost:56120/</IISUrl>
+          <IISUrl>http://windows:8083/</IISUrl>
+          <OverrideIISAppRootUrl>True</OverrideIISAppRootUrl>
+          <IISAppRootUrl>http://windows:8083/</IISAppRootUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
           <UseCustomServer>False</UseCustomServer>
           <CustomServerUrl>

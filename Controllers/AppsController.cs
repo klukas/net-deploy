@@ -30,7 +30,7 @@ namespace deploy.Controllers {
 				try {
 					builder.Build();
 				} catch(Exception e) {
-					Elmah.ErrorLog.GetDefault(context).Log(new Elmah.Error(e));
+                    LogService.Fatal(e);
 				}
 			}).Start();;
 

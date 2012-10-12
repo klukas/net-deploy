@@ -5,3 +5,4 @@ obj
 *.user
 App_Data/*
 .DS_Store
+Logs/*
