@@ -35,11 +35,12 @@ namespace deploy.Controllers {
 				HttpCookie cookie = new HttpCookie(FormsAuthentication.FormsCookieName, FormsAuthentication.Encrypt(ticket));
 				Response.Cookies.Add(cookie);
 
-				Response.Cookies.Add(cookie);
+                LogService.Info("successful login for " + username);
 				if(!string.IsNullOrEmpty(returnUrl)) return Redirect(returnUrl);
 				return RedirectToAction("index");
 			}
 
+            LogService.Warn("failed login attempt for " + username);
 			TempData["flash"] = "invalid login";
 			return View();
 		}
