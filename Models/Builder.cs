@@ -129,7 +129,7 @@ namespace deploy.Models {
 			}
 
             string builddir;
-            if(_config.TryGetValue("builddir", out builddir)) builddir = Path.Combine(_workingdir, builddir);
+            if(_config.TryGetValue("build_dir", out builddir)) builddir = Path.Combine(_workingdir, builddir);
             else builddir = _workingdir;
 
             Cmd.Run("\"" + msbuild + "\"" + parameters, runFrom: builddir, logPath: _logfile)
