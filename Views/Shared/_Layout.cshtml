@@ -8,9 +8,9 @@
 
 <body>
     <ul id="nav">
-        <li>@Html.ActionLink("apps", "index", new { controller = "home" })</li>
+        <li>@Html.ActionLink("apps", "index", new { controller = "root" })</li>
         @if(User.Identity.IsAuthenticated) {
-        <li>@Html.ActionLink("logout", "logout", new { controller = "home" })</li>
+        <li>@Html.ActionLink("logout", "logout", new { controller = "root" })</li>
         }
     </ul>
     @if(TempData["flash"] != null) {
