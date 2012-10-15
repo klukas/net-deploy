@@ -7,12 +7,12 @@
 </head>
 
 <body>
+    @if(User.Identity.IsAuthenticated) {
     <ul id="nav">
         <li>@Html.ActionLink("apps", "index", new { controller = "root" })</li>
-        @if(User.Identity.IsAuthenticated) {
-        <li>@Html.ActionLink("logout", "logout", new { controller = "root" })</li>
-        }
+        <li>@Html.ActionLink("logout", "logout", new { controller = "root" })</li>   
     </ul>
+    }
     @if(TempData["flash"] != null) {
         <div id="flash">@Html.Raw(TempData["flash"] as string)</div>
     }
