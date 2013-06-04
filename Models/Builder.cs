@@ -114,6 +114,8 @@ namespace deploy.Models {
                     foreach(var trsfm in Directory.GetFiles(dir, "web.*.config", SearchOption.TopDirectoryOnly)) {
                         File.Delete(trsfm);
                     }
+                    File.Delete(webConfig);
+                    File.Move(webConfig + ".transformed", webConfig);
                 }
             }
         }

@@ -11,6 +11,6 @@
     <Message Text="using targets from $(TransformTaskAssembly)" />
     <TransformXml Source="$(Dir)\$(Source)"
                   Transform="$(Dir)\$(Transform)"
-                  Destination="$(Dir)\$(Source)" />
+                  Destination="$(Dir)\$(Source).transformed" />
   </Target>
 </Project>
