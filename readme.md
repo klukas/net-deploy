@@ -15,17 +15,20 @@ Prerequisites
 
 1. Install git, and make sure the git bin directory is on the system path (not just your user path, and not the git cmd directory).
    e.g. `setx /m path "%path%;c:\program files (x86)\git\bin"`
-2. Install targeting packs for MS Build (see [here](http://stackoverflow.com/a/3315614/87453)).
+2. Install the [NuGet.exe command line bootstrapper](http://nuget.codeplex.com/releases/view/58939), put it in the system path.
+3. Pre-2012: Install targeting packs for MS Build (see [here](http://stackoverflow.com/a/3315614/87453)).
 	* If you want to use web.config transformations, make sure you have $(MSBuildExtensionsPath)\Microsoft\VisualStudio\v11.0\Web\Microsoft.Web.Publishing.Tasks.dll or $(MSBuildExtensionsPath)\Microsoft\VisualStudio\v10.0\Web\Microsoft.Web.Publishing.Tasks.dll 
 
 Setting up the website
 ----------------------
 
 1. Build net-deploy from source. Copy the files to your server, e.g. `c:\inetpub\wwwroot\deploy`.
-2. In the IIS management console, create a new website (or an application under an existing website) that points to the net-deploy files.
-3. If you created an application instead of a website, create a new application pool for the application.
-4. In the application pool advanced settings, set it to run as "LOCAL SYSTEM" so that it has permissions to update the file system.
-5. In the appsettings.config, you'll want to change the password (default is 'password') and probably require HTTPS if you're running in production.
+2. In the IIS management console...
+	1. create a new website (or an application under an existing website) that points to the net-deploy files.
+	2. If you created an application instead of a website, create a new application pool for the application.
+	3. In the application pool advanced settings, set it to run as "LOCAL SYSTEM" so that it has permissions to update the file system.
+3. In the appsettings.config, you'll want to change the password (default is 'password') and probably require HTTPS if you're
+running in production.
 
 Configuring apps
 ----------------
