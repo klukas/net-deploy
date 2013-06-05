@@ -15,14 +15,13 @@ Prerequisites
 
 1. Install git, and make sure the git bin directory is on the system path (not just your user path, and not the git cmd directory).
    e.g. `setx /m path "%path%;c:\program files (x86)\git\bin"`
-2. Install the [NuGet.exe command line bootstrapper](http://nuget.codeplex.com/releases/view/58939), put it in the system path.
-3. Pre-2012: Install targeting packs for MS Build (see [here](http://stackoverflow.com/a/3315614/87453)).
-	* If you want to use web.config transformations, make sure you have $(MSBuildExtensionsPath)\Microsoft\VisualStudio\v11.0\Web\Microsoft.Web.Publishing.Tasks.dll or $(MSBuildExtensionsPath)\Microsoft\VisualStudio\v10.0\Web\Microsoft.Web.Publishing.Tasks.dll 
+2. Install the [NuGet.exe command line bootstrapper](http://nuget.codeplex.com/releases/view/58939), put it in the system path also.
+3. Copy `C:\Program Files (x86)\MSBuild` to 
 
 Setting up the website
 ----------------------
 
-1. Build net-deploy from source. Copy the files to your server, e.g. `c:\inetpub\wwwroot\deploy`.
+1. Build net-deploy from source. Copy the files to your server, e.g. `c:\inetpub\deploy`.
 2. In the IIS management console...
 	1. create a new website (or an application under an existing website) that points to the net-deploy files.
 	2. If you created an application instead of a website, create a new application pool for the application.
@@ -42,7 +41,7 @@ Now you need to configure the apps that net-deploy can deploy. A good example is
     ```
     git = git://github.com/lukesampson/net-deploy.git
     deploy_ignore = *.cs *.sln *.csproj *.log *.ps1 .git .gitignore obj thumbs.db App_Data appsettings.config
-    deploy_to = C:\inetpub\wwwroot\deploy
+    deploy_to = C:\inetpub\sites\deploy
     ```
 
 Trying it out
