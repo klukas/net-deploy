@@ -12,10 +12,10 @@ using System.Web.UI;
 namespace deploy.Controllers {
     public class RootController : BaseController {
 
-        [OutputCache(Duration = 0)]
-        public ActionResult Login() {
-            return View();
-        }
+        //[OutputCache(Duration = 0)]
+        //public ActionResult Login() {
+        //    return View();
+        //}
 
         public ActionResult Logout() {
             FormsAuthentication.SignOut();
@@ -23,8 +23,6 @@ namespace deploy.Controllers {
             return RedirectToAction("login");
         }
 
-        [HttpPost]
-        [ValidateAntiForgeryToken]
         public ActionResult Login(string username, string password, string returnUrl) {
             var passhash = ConfigurationManager.AppSettings["password"];
 

@@ -11,7 +11,6 @@ namespace deploy.Controllers {
 	
 	public class AppsController : BaseController {
 
-		[Authorize]
 		public ActionResult Detail(string id) {
 			ViewBag.id = id;
 			ViewBag.state = FileDB.AppState(id);
@@ -21,8 +20,6 @@ namespace deploy.Controllers {
 			return View();
 		}
 
-		[Authorize]
-		[HttpPost]
 		public ActionResult Build(string id) {
 			var context = System.Web.HttpContext.Current;
 			var builder = new Builder(id);
@@ -37,7 +34,6 @@ namespace deploy.Controllers {
 			return RedirectToAction("detail", new { id = id });
 		}
 
-		[Authorize]
 		public ActionResult Log(string id) {
 			var path = FileDB.LogPath(id);
 			if(!System.IO.File.Exists(path)) return HttpNotFound("No log file found");
